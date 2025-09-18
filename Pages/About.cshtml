@@ -1,0 +1,20 @@
+@page
+@model dynamic
+@{
+    ViewData["Title"] = "About - SecureLab";
+}
+<div class="container py-4">
+  <h2>About this app</h2>
+  <p>This app is intentionally insecure for teaching secure coding. Use the Demo page to exercise functionality and then fix the code in your feature branches.</p>
+
+  <h5>Instructor checklist</h5>
+  <ul>
+    <li>Passwords: hashed + salted (use PasswordHasher)</li>
+    <li>DB: parameterized queries or EF Core</li>
+    <li>Input: server-side validation and normalization</li>
+    <li>Files: magic-bytes, size limits, GUID filenames, stored out of webroot</li>
+    <li>Notes: encrypted at rest (AES-GCM / Data Protection)</li>
+    <li>Errors: no stack traces, structured server logs</li>
+    <li>Headers: CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy</li>
+  </ul>
+</div>
