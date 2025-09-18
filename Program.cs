@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Data.Sqlite;
+using Microsoft.AspNetCore.Identity; // added for password hasher
 using System.IO;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,10 +10,17 @@ var dbPath = Path.Combine(builder.Environment.ContentRootPath, "insecure.db");
 var connString = $"Data Source={dbPath}";
 
 builder.Services.AddSingleton(new SqliteConnection(connString));
+builder.Services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>(); // add hasher
 builder.Services.AddSingleton<UserRepository>();
 
-// Enable MVC Controllers + Razor Pages
-builder.Services.AddControllersWithViews();
+// Register sanitation filter
+builder.Services.AddScoped<SanitizeInputFilter>();
+
+// Enable MVC Controllers + Razor Pages with global sanitize filter
+builder.Services.AddControllersWithViews(o =>
+{
+    o.Filters.Add<SanitizeInputFilter>();
+});
 builder.Services.AddRazorPages();
 
 var app = builder.Build();

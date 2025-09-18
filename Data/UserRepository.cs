@@ -1,11 +1,15 @@
 using Microsoft.Data.Sqlite;
+using Microsoft.AspNetCore.Identity; // for IPasswordHasher
+using System.Collections.Generic;
 
 public class UserRepository
 {
     private readonly SqliteConnection _conn;
-    public UserRepository(SqliteConnection conn)
+    private readonly IPasswordHasher<User> _hasher;
+    public UserRepository(SqliteConnection conn, IPasswordHasher<User> hasher)
     {
         _conn = conn;
+        _hasher = hasher;
         if (_conn.State != System.Data.ConnectionState.Open)
         {
             _conn.Open();
@@ -18,17 +22,20 @@ public class UserRepository
 
     public void AddUser(string username, string password)
     {
+        // hash password
+        var user = new User { UserName = username };
+        var hashed = _hasher.HashPassword(user, password);
         using var cmd = _conn.CreateCommand();
-        cmd.CommandText = "INSERT INTO Users (UserName, Password) VALUES (@userName, @password)"; // secure parameterized
+        cmd.CommandText = "INSERT INTO Users (UserName, Password) VALUES (@userName, @password)";
         cmd.Parameters.AddWithValue("@userName", username);
-        cmd.Parameters.AddWithValue("@password", password);
+        cmd.Parameters.AddWithValue("@password", hashed);
         cmd.ExecuteNonQuery();
     }
 
     public User GetByUserName(string username)
     {
         using var cmd = _conn.CreateCommand();
-        cmd.CommandText = "SELECT Id, UserName, Password FROM Users WHERE UserName = @userName LIMIT 1"; // secure parameterized
+        cmd.CommandText = "SELECT Id, UserName, Password FROM Users WHERE UserName = @userName LIMIT 1";
         cmd.Parameters.AddWithValue("@userName", username);
         using var r = cmd.ExecuteReader();
         if (r.Read())
@@ -37,7 +44,7 @@ public class UserRepository
             {
                 Id = r.GetInt32(0),
                 UserName = r.GetString(1),
-                Password = r.GetString(2)
+                Password = r.GetString(2) // hashed
             };
         }
         return null;
@@ -46,7 +53,7 @@ public class UserRepository
     public void AddNote(int userId, string content)
     {
         using var cmd = _conn.CreateCommand();
-        cmd.CommandText = "INSERT INTO Notes (UserId, Content) VALUES (@userId, @content)"; // secure parameterized
+        cmd.CommandText = "INSERT INTO Notes (UserId, Content) VALUES (@userId, @content)";
         cmd.Parameters.AddWithValue("@userId", userId);
         cmd.Parameters.AddWithValue("@content", content);
         cmd.ExecuteNonQuery();
@@ -55,7 +62,7 @@ public class UserRepository
     public IEnumerable<Note> GetNotes(int userId)
     {
         using var cmd = _conn.CreateCommand();
-        cmd.CommandText = "SELECT Id, UserId, Content FROM Notes WHERE UserId = @userId"; // secure parameterized
+        cmd.CommandText = "SELECT Id, UserId, Content FROM Notes WHERE UserId = @userId";
         cmd.Parameters.AddWithValue("@userId", userId);
         using var r = cmd.ExecuteReader();
         var list = new List<Note>();
