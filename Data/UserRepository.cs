@@ -1,5 +1,4 @@
 using Microsoft.Data.Sqlite;
-using System.Collections.Generic;
 
 public class UserRepository
 {
@@ -7,7 +6,10 @@ public class UserRepository
     public UserRepository(SqliteConnection conn)
     {
         _conn = conn;
-        _conn.Open();
+        if (_conn.State != System.Data.ConnectionState.Open)
+        {
+            _conn.Open();
+        }
         using var cmd = _conn.CreateCommand();
         cmd.CommandText = @"CREATE TABLE IF NOT EXISTS Users (Id INTEGER PRIMARY KEY AUTOINCREMENT, UserName TEXT, Password TEXT);
                             CREATE TABLE IF NOT EXISTS Notes (Id INTEGER PRIMARY KEY AUTOINCREMENT, UserId INTEGER, Content TEXT);";
@@ -16,17 +18,18 @@ public class UserRepository
 
     public void AddUser(string username, string password)
     {
-        var sql = $"INSERT INTO Users (UserName, Password) VALUES ('{username}', '{password}')"; // INSECURE
         using var cmd = _conn.CreateCommand();
-        cmd.CommandText = sql;
+        cmd.CommandText = "INSERT INTO Users (UserName, Password) VALUES (@userName, @password)"; // secure parameterized
+        cmd.Parameters.AddWithValue("@userName", username);
+        cmd.Parameters.AddWithValue("@password", password);
         cmd.ExecuteNonQuery();
     }
 
     public User GetByUserName(string username)
     {
-        var sql = $"SELECT Id, UserName, Password FROM Users WHERE UserName = '{username}' LIMIT 1"; // INSECURE
         using var cmd = _conn.CreateCommand();
-        cmd.CommandText = sql;
+        cmd.CommandText = "SELECT Id, UserName, Password FROM Users WHERE UserName = @userName LIMIT 1"; // secure parameterized
+        cmd.Parameters.AddWithValue("@userName", username);
         using var r = cmd.ExecuteReader();
         if (r.Read())
         {
@@ -42,17 +45,18 @@ public class UserRepository
 
     public void AddNote(int userId, string content)
     {
-        var sql = $"INSERT INTO Notes (UserId, Content) VALUES ({userId}, '{content}')"; // INSECURE
         using var cmd = _conn.CreateCommand();
-        cmd.CommandText = sql;
+        cmd.CommandText = "INSERT INTO Notes (UserId, Content) VALUES (@userId, @content)"; // secure parameterized
+        cmd.Parameters.AddWithValue("@userId", userId);
+        cmd.Parameters.AddWithValue("@content", content);
         cmd.ExecuteNonQuery();
     }
 
     public IEnumerable<Note> GetNotes(int userId)
     {
-        var sql = $"SELECT Id, UserId, Content FROM Notes WHERE UserId = {userId}"; // INSECURE
         using var cmd = _conn.CreateCommand();
-        cmd.CommandText = sql;
+        cmd.CommandText = "SELECT Id, UserId, Content FROM Notes WHERE UserId = @userId"; // secure parameterized
+        cmd.Parameters.AddWithValue("@userId", userId);
         using var r = cmd.ExecuteReader();
         var list = new List<Note>();
         while (r.Read())

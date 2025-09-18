@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "D:\\secure-coding-git\\secure-lab\\SecureLab\\SecureLab.csproj": {}
+    "C:\\Users\\kunle\\source\\repos\\kunlesymls\\secure-lab\\secure-lab\\SecureLab.csproj": {}
   },
   "projects": {
-    "D:\\secure-coding-git\\secure-lab\\SecureLab\\SecureLab.csproj": {
+    "C:\\Users\\kunle\\source\\repos\\kunlesymls\\secure-lab\\secure-lab\\SecureLab.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\secure-coding-git\\secure-lab\\SecureLab\\SecureLab.csproj",
+        "projectUniqueName": "C:\\Users\\kunle\\source\\repos\\kunlesymls\\secure-lab\\secure-lab\\SecureLab.csproj",
         "projectName": "SecureLab",
-        "projectPath": "D:\\secure-coding-git\\secure-lab\\SecureLab\\SecureLab.csproj",
-        "packagesPath": "C:\\Users\\sarat\\.nuget\\packages\\",
-        "outputPath": "D:\\secure-coding-git\\secure-lab\\SecureLab\\obj\\",
+        "projectPath": "C:\\Users\\kunle\\source\\repos\\kunlesymls\\secure-lab\\secure-lab\\SecureLab.csproj",
+        "packagesPath": "C:\\Users\\kunle\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\kunle\\source\\repos\\kunlesymls\\secure-lab\\secure-lab\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\sarat\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\kunle\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -26,6 +26,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -44,11 +45,17 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.300"
+        "SdkAnalysisLevel": "10.0.100"
       },
       "frameworks": {
         "net9.0": {
           "targetAlias": "net9.0",
+          "dependencies": {
+            "Microsoft.Data.Sqlite": {
+              "target": "Package",
+              "version": "[9.0.9, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",
@@ -68,7 +75,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.301/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.100-rc.1.25451.107/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
